@@ -1,0 +1,205 @@
+
+local ScreenGui = Instance.new("ScreenGui")
+local main = Instance.new("Frame")
+local Label = Instance.new("TextLabel")
+local KartAutofarm = Instance.new("TextButton")
+local BarbarianAutofarm = Instance.new("TextButton")
+local Autocouncilfarm = Instance.new("TextButton")
+local Autowoodfarm = Instance.new("TextButton")
+
+--Properties:
+
+ScreenGui.Parent = game.CoreGui
+
+main.Name = "main"
+main.Parent = ScreenGui
+main.BackgroundColor3 = Color3.fromRGB(48, 48, 48)
+main.Position = UDim2.new(0.552504003, 0, 0.0317726247, 0)
+main.Size = UDim2.new(0, 387, 0, 283)
+main.Active = true
+main.Draggable = true
+
+Label.Name = "Label"
+Label.Parent = main
+Label.BackgroundColor3 = Color3.fromRGB(93, 97, 103)
+Label.Size = UDim2.new(0, 390, 0, 50)
+Label.Font = Enum.Font.SourceSans
+Label.Text = "GENERIC GAEM. exluded#0671"
+Label.TextColor3 = Color3.fromRGB(0, 0, 0)
+Label.TextSize = 14.000
+
+KartAutofarm.Name = "Kart Autofarm"
+KartAutofarm.Parent = main
+KartAutofarm.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KartAutofarm.Position = UDim2.new(0, 0, 0.174216032, 0)
+KartAutofarm.Size = UDim2.new(0, 196, 0, 54)
+KartAutofarm.Font = Enum.Font.SourceSans
+KartAutofarm.Text = "KART Autofarm"
+KartAutofarm.TextColor3 = Color3.fromRGB(0, 0, 0)
+KartAutofarm.TextSize = 14.000
+KartAutofarm.MouseButton1Down:connect(function()
+	local content = game:HttpGet("https://jacobies.xyz/genericroleplaygaem.lua")
+	assert(loadstring(content))()
+end)
+
+BarbarianAutofarm.Name = "Barbarian Autofarm"
+BarbarianAutofarm.Parent = main
+BarbarianAutofarm.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+BarbarianAutofarm.Position = UDim2.new(0.502564132, 0, 0.174216032, 0)
+BarbarianAutofarm.Size = UDim2.new(0, 194, 0, 54)
+BarbarianAutofarm.Font = Enum.Font.SourceSans
+BarbarianAutofarm.Text = "Barbarian Autofarm"
+BarbarianAutofarm.TextColor3 = Color3.fromRGB(0, 0, 0)
+BarbarianAutofarm.TextSize = 14.000
+BarbarianAutofarm.MouseButton1Down:connect(function()
+	local currentamount = 0
+	function getfuncs(scrpt, replacefunc)
+		local rt = {}
+		for _,i in pairs(getreg()) do
+			if type(i) == "function" then
+				if getfenv(i).script == scrpt then
+					table.insert(rt,i)
+					if replacefunc ~= nil then
+						getreg()[_] = replacefunc
+						print("whoa")
+					end
+				end
+			end
+		end
+		return rt
+	end
+	local messagefunc = getfuncs(game.Players.LocalPlayer.PlayerScripts.EventClientHandler)[1]
+	function getcurrentfoodamount()
+		function round(n)
+			return n % 1 >= 0.5 and math.ceil(n) or math.floor(n)
+		end
+		local p = game.Players.LocalPlayer
+		local c = p.Character
+		local b = p.Backpack
+		local part
+		if b:FindFirstChild("steal food") ~= nil then
+			part = b["steal food"].Food
+		end
+		if c:FindFirstChild("steal food") ~= nil then
+			part = c["steal food"].Food
+		end
+		if part == nil then return 0 end
+		return round(-((part.Transparency-1)*10))/2
+	end
+	spawn(function()
+		while wait() do
+			pcall(function()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.HeadGui:Destroy()
+			end)
+		end
+	end)
+	local lp = game.Players.LocalPlayer
+	local tptoggle = false
+	local FoodSupplies = game.Workspace.FoodSupplies
+	local GlobalToggle = false
+	FoodSupplies.BarbSupply.FoodLevel.CanCollide = false
+	FoodSupplies.TownSupply.FoodLevel.CanCollide = false
+
+
+	function activate()
+
+		if lp.Character:FindFirstChild("steal food") ~= nil then
+			lp.Character["steal food"]:Activate()
+		else if lp.Backpack:FindFirstChild("steal food") ~= nil then
+				lp.Backpack:FindFirstChild("steal food").Parent = lp.Character
+				lp.Character:FindFirstChild("steal food"):Activate()
+			end
+		end
+	end
+	local LIB = loadstring(game:HttpGet("https://pastebin.com/raw/zH17BK2a"))()
+	local TELEPORTS = LIB:CreateWindow({text = "Teleports"})
+	local AUTOFARM = LIB:CreateWindow({text = "AUTOFARM"})
+	local CREDITS = LIB:CreateWindow({text = "CREDITS"})
+	CREDITS:AddButton('Made by wagoner on v3rm, like if u appreciated it',function() end)
+	TELEPORTS:AddButton("Town food bowl", function()
+		lp.Character.HumanoidRootPart.CFrame = FoodSupplies.TownSupply.FoodLevel.CFrame
+	end)
+	TELEPORTS:AddButton("Barb food bowl", function()
+		lp.Character.HumanoidRootPart.CFrame = FoodSupplies.BarbSupply.FoodLevel.CFrame
+	end)
+	AUTOFARM:AddButton("Steal Food once", function()
+		lp.Character.HumanoidRootPart.CFrame = FoodSupplies.TownSupply.FoodLevel.CFrame
+
+		while currentamount < 5 and wait() do
+			activate()
+			currentamount = getcurrentfoodamount()
+			print(currentamount)
+			local magnitude = (lp.Character.HumanoidRootPart.Position - FoodSupplies.TownSupply.FoodLevel.Position).Magnitude
+			if magnitude > 5 then
+				lp.Character.HumanoidRootPart.CFrame = FoodSupplies.TownSupply.FoodLevel.CFrame
+			end
+		end
+		lp.Character.HumanoidRootPart.CFrame = FoodSupplies.BarbSupply.FoodLevel.CFrame
+		wait(1)
+		activate()
+		while getcurrentfoodamount() == 5 do
+			lp.Character.HumanoidRootPart.CFrame = FoodSupplies.BarbSupply.FoodLevel.CFrame
+			activate()
+			wait(1)
+		end
+	end)
+	AUTOFARM:AddToggle("Autofarm", function(tog)
+		if tog == true then
+			GlobalToggle = true
+		end
+		if tog ~= true then
+			GlobalToggle = false
+		end
+	end)
+	while wait() do
+		if GlobalToggle == true then
+			lp.Character.HumanoidRootPart.CFrame = FoodSupplies.TownSupply.FoodLevel.CFrame
+
+			while currentamount < 5 and wait() do
+				activate()
+				currentamount = getcurrentfoodamount()
+				print(currentamount)
+				local magnitude = (lp.Character.HumanoidRootPart.Position - FoodSupplies.TownSupply.FoodLevel.Position).Magnitude
+				if magnitude > 5 then
+					lp.Character.HumanoidRootPart.CFrame = FoodSupplies.TownSupply.FoodLevel.CFrame
+				end
+			end
+			lp.Character.HumanoidRootPart.CFrame = FoodSupplies.BarbSupply.FoodLevel.CFrame
+			wait(1)
+			activate()
+			print(getcurrentfoodamount())
+			while currentamount == 5 do
+				lp.Character.HumanoidRootPart.CFrame = FoodSupplies.BarbSupply.FoodLevel.CFrame
+				activate()
+				wait(1)
+				currentamount = getcurrentfoodamount()
+
+			end
+		end
+	end
+end)
+
+Autocouncilfarm.Name = "Auto council farm"
+Autocouncilfarm.Parent = main
+Autocouncilfarm.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Autocouncilfarm.Position = UDim2.new(0, 0, 0.362369329, 0)
+Autocouncilfarm.Size = UDim2.new(0, 202, 0, 57)
+Autocouncilfarm.Font = Enum.Font.SourceSans
+Autocouncilfarm.Text = "Auto Council Farm"
+Autocouncilfarm.TextColor3 = Color3.fromRGB(0, 0, 0)
+Autocouncilfarm.TextSize = 14.000
+Autocouncilfarm.MouseButton1Down:connect(function()
+	loadstring(game:HttpGet("https://gist.github.com/DeveloperMikey/ef335883041b3bc14f2cd3101859b065/raw/grg.lua", true))()
+end)
+Autowoodfarm.Name = "Auto wood farm"
+Autowoodfarm.Parent = main
+Autowoodfarm.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Autowoodfarm.Position = UDim2.new(0.502564132, 0, 0.362369329, 0)
+Autowoodfarm.Size = UDim2.new(0, 194, 0, 57)
+Autowoodfarm.Font = Enum.Font.SourceSans
+Autowoodfarm.Text = "Auto Wood Farm"
+Autowoodfarm.TextColor3 = Color3.fromRGB(0, 0, 0)
+Autowoodfarm.TextSize = 14.000
+Autowoodfarm.MouseButton1Down:connect(function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Avverias/ROBLOX/main/generic%20roleplay%20gaem/AutoFarm.lua"))()
+end)
